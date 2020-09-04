@@ -8,17 +8,19 @@ publish = false
 cargo-fuzz = true
 
 [features]
+afl_fuzz = ["afl"]
 honggfuzz_fuzz = ["honggfuzz"]
 
 [dependencies]
 honggfuzz = { version = "0.5", optional = true }
 bitcoin_num = { path = ".." }
 rust-crypto = "0.2"
+afl = { version = "0.4", optional = true }
 
 # Prevent this from interfering with workspaces
 [workspace]
 members = ["."]
 
-#[[bin]]
-#name = "sha1"
-#path = "fuzz_targets/sha1.rs"
+[[bin]]
+name = "uint128_fuzz"
+path = "fuzz_targets/uint128_fuzz.rs"
