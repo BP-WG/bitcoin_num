@@ -1,5 +1,5 @@
 // Bitcoin Numeric Library
-// Written in 2018 by
+// Written in 2020 by
 //   Dr. Maxim Orlovsky <orlovsky@pandoracore.com>
 //
 // To the extent possible under law, the author(s) have dedicated all
@@ -45,3 +45,6 @@
 
 pub(crate) mod endian;
 pub mod hex;
+#[macro_use]
+mod internal_macros;
+pub mod util;
