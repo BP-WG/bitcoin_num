@@ -1,0 +1,25 @@
+[package]
+name = "bitcoin_num"
+version = "0.1.0"
+authors = ["Dr. Maxim Orlovsky <orlovsky@pandoracore.com>"]
+license = "CC0-1.0"
+description = "Numeric functions & traits used by rust bitcoin, bitcoin_hashes and other packages, supporting rustc 1.29.0"
+documentation = "https://docs.rs/bitcoin_num/"
+keywords = [ "crypto", "bitcoin", "bigint", "num", "no_std" ]
+categories = [ "cryptography::cryptocurrencies", "data-structures", "mathematics", "no-std", "wasm" ]
+readme = "README.md"
+
+[lib]
+name = "bitcoin_num"
+path = "src/lib.rs"
+
+[features]
+default = [ "std" ]
+std = []
+unstable = []  # for benchmarking
+fuzztarget = [] # used by other rust-bitcoin projects to make hashes almost-noops, DON'T USE THIS
+
+[dependencies]
+
+[target.wasm32-unknown-unknown.dev-dependencies]
+wasm-bindgen-test = "0.3"
