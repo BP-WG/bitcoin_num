@@ -41,6 +41,7 @@
 
 #[cfg(any(test, feature="std"))] pub extern crate core;
 
-//#[cfg(any(test, feature = "std"))] mod std_impls;
+#[cfg(any(test, feature = "std"))] mod std_impls;
 
 pub(crate) mod endian;
+pub mod hex;
