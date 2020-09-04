@@ -47,4 +47,5 @@ pub(crate) mod endian;
 pub mod hex;
 #[macro_use]
 mod internal_macros;
+pub mod uint;
 pub mod util;
