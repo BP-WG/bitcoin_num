@@ -1,4 +1,4 @@
-// Bitcoin Hashes Library
+// Bitcoin Numeric Library
 // Written in 2018 by
 //   Dr. Maxim Orlovsky <orlovsky@pandoracore.com>
 //
@@ -42,3 +42,5 @@
 #[cfg(any(test, feature="std"))] pub extern crate core;
 
 //#[cfg(any(test, feature = "std"))] mod std_impls;
+
+pub(crate) mod endian;
