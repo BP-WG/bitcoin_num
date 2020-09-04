@@ -68,8 +68,10 @@ macro_rules! define_le_to_array {
     }
 }
 
+define_slice_to_be!(slice_to_u16_be, u16);
 define_slice_to_be!(slice_to_u32_be, u32);
 define_slice_to_be!(slice_to_u64_be, u64);
+define_be_to_array!(u16_to_array_be, u16, 2);
 define_be_to_array!(u32_to_array_be, u32, 4);
 define_be_to_array!(u64_to_array_be, u64, 8);
 define_slice_to_le!(slice_to_u16_le, u16);
@@ -123,8 +125,10 @@ mod tests {
 
     #[test]
     fn endianness_test() {
+        assert_eq!(slice_to_u16_be(&[0xde, 0xad]), 0xdead);
         assert_eq!(slice_to_u32_be(&[0xde, 0xad, 0xbe, 0xef]), 0xdeadbeef);
         assert_eq!(slice_to_u64_be(&[0xde, 0xad, 0xbe, 0xef, 0x1b, 0xad, 0xca, 0xfe]), 0xdeadbeef1badcafe);
+        assert_eq!(u16_to_array_be(0xbeef), [0xbe, 0xef]);
         assert_eq!(u32_to_array_be(0xdeadbeef), [0xde, 0xad, 0xbe, 0xef]);
         assert_eq!(u64_to_array_be(0x1badcafedeadbeef), [0x1b, 0xad, 0xca, 0xfe, 0xde, 0xad, 0xbe, 0xef]);
 
