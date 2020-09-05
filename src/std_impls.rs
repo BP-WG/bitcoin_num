@@ -12,10 +12,14 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 //
 
-use std::error;
 use hex;
+use std::error;
 
 impl error::Error for hex::Error {
-    fn cause(&self) -> Option<&error::Error> { None }
-    fn description(&self) -> &str { "`std::error::description` is deprecated" }
+    fn cause(&self) -> Option<&error::Error> {
+        None
+    }
+    fn description(&self) -> &str {
+        "`std::error::description` is deprecated"
+    }
 }

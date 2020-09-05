@@ -36,23 +36,33 @@ macro_rules! impl_array_newtype {
 
             #[inline]
             /// Returns the length of the object as an array
-            pub fn len(&self) -> usize { $len }
+            pub fn len(&self) -> usize {
+                $len
+            }
 
             #[inline]
             /// Returns whether the object, as an array, is empty. Always false.
-            pub fn is_empty(&self) -> bool { false }
+            pub fn is_empty(&self) -> bool {
+                false
+            }
 
             #[inline]
             /// Returns the underlying bytes.
-            pub fn as_bytes(&self) -> &[$ty; $len] { &self.0 }
+            pub fn as_bytes(&self) -> &[$ty; $len] {
+                &self.0
+            }
 
             #[inline]
             /// Returns the underlying bytes.
-            pub fn to_bytes(&self) -> [$ty; $len] { self.0.clone() }
+            pub fn to_bytes(&self) -> [$ty; $len] {
+                self.0.clone()
+            }
 
             #[inline]
             /// Returns the underlying bytes.
-            pub fn into_bytes(self) -> [$ty; $len] { self.0 }
+            pub fn into_bytes(self) -> [$ty; $len] {
+                self.0
+            }
         }
 
         impl<'a> ::core::convert::From<&'a [$ty]> for $thing {
@@ -100,8 +110,12 @@ macro_rules! impl_array_newtype {
                 // be ordered anyway except to put them in BTrees or whatever, and
                 // they don't care how we order as long as we're consistent).
                 for i in 0..$len {
-                    if self[$len - 1 - i] < other[$len - 1 - i] { return ::core::cmp::Ordering::Less; }
-                    if self[$len - 1 - i] > other[$len - 1 - i] { return ::core::cmp::Ordering::Greater; }
+                    if self[$len - 1 - i] < other[$len - 1 - i] {
+                        return ::core::cmp::Ordering::Less;
+                    }
+                    if self[$len - 1 - i] > other[$len - 1 - i] {
+                        return ::core::cmp::Ordering::Greater;
+                    }
                 }
                 ::core::cmp::Ordering::Equal
             }
@@ -120,20 +134,22 @@ macro_rules! impl_array_newtype {
         impl ::core::hash::Hash for $thing {
             #[inline]
             fn hash<H>(&self, state: &mut H)
-                where H: ::core::hash::Hasher
+            where
+                H: ::core::hash::Hasher,
             {
                 (&self[..]).hash(state);
             }
 
             fn hash_slice<H>(data: &[$thing], state: &mut H)
-                where H: ::core::hash::Hasher
+            where
+                H: ::core::hash::Hasher,
             {
                 for d in data.iter() {
                     (&d[..]).hash(state);
                 }
             }
         }
-    }
+    };
 }
 
 /// Implements debug formatting for a given wrapper type
@@ -144,7 +160,7 @@ macro_rules! impl_array_newtype_show {
                 write!(f, concat!(stringify!($thing), "({:?})"), &self[..])
             }
         }
-    }
+    };
 }
 
 /// Implements standard indexing methods for a given wrapper type
@@ -185,8 +201,7 @@ macro_rules! impl_index_newtype {
                 &self.0[..]
             }
         }
-
-    }
+    };
 }
 
 macro_rules! display_from_debug {
@@ -196,7 +211,7 @@ macro_rules! display_from_debug {
                 ::core::fmt::Debug::fmt(self, f)
             }
         }
-    }
+    };
 }
 
 /// Implements several traits for byte-based newtypes.

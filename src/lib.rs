@@ -28,20 +28,21 @@
 #![deny(non_snake_case)]
 #![deny(unused_mut)]
 #![deny(missing_docs)]
-
 // In general, rust is absolutely horrid at supporting users doing things like,
 // for example, compiling Rust code for real environments. Disable useless lints
 // that don't do anything but annoy us and cant actually ever be resolved.
 #![allow(bare_trait_objects)]
 #![allow(ellipsis_inclusive_range_patterns)]
-
 #![cfg_attr(all(not(test), not(feature = "std")), no_std)]
 #![cfg_attr(all(test, feature = "unstable"), feature(test))]
-#[cfg(all(test, feature = "unstable"))] extern crate test;
+#[cfg(all(test, feature = "unstable"))]
+extern crate test;
 
-#[cfg(any(test, feature="std"))] pub extern crate core;
+#[cfg(any(test, feature = "std"))]
+pub extern crate core;
 
-#[cfg(any(test, feature = "std"))] mod std_impls;
+#[cfg(any(test, feature = "std"))]
+mod std_impls;
 
 pub(crate) mod endian;
 pub mod hex;

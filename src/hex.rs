@@ -33,7 +33,9 @@ impl fmt::Display for Error {
         match *self {
             Error::InvalidChar(ch) => write!(f, "invalid hex character {}", ch),
             Error::OddLengthString(ell) => write!(f, "odd hex string length {}", ell),
-            Error::InvalidLength(ell, ell2) => write!(f, "bad hex string length {} (expected {})", ell2, ell),
+            Error::InvalidLength(ell, ell2) => {
+                write!(f, "bad hex string length {} (expected {})", ell2, ell)
+            }
         }
     }
 }
@@ -49,9 +51,8 @@ pub trait ToHex {
 pub trait FromHex: Sized {
     /// Produce an object from a byte iterator
     fn from_byte_iter<I>(iter: I) -> Result<Self, Error>
-        where I: Iterator<Item=Result<u8, Error>> +
-        ExactSizeIterator +
-        DoubleEndedIterator;
+    where
+        I: Iterator<Item = Result<u8, Error>> + ExactSizeIterator + DoubleEndedIterator;
 
     /// Produce an object from a hex string
     fn from_hex(s: &str) -> Result<Self, Error> {
@@ -87,12 +88,8 @@ impl<'a> HexIterator<'a> {
 }
 
 fn chars_to_hex(hi: u8, lo: u8) -> Result<u8, Error> {
-    let hih = (hi as char)
-        .to_digit(16)
-        .ok_or(Error::InvalidChar(hi))?;
-    let loh = (lo as char)
-        .to_digit(16)
-        .ok_or(Error::InvalidChar(lo))?;
+    let hih = (hi as char).to_digit(16).ok_or(Error::InvalidChar(hi))?;
+    let loh = (lo as char).to_digit(16).ok_or(Error::InvalidChar(lo))?;
 
     let ret = (hih << 4) + loh;
     Ok(ret as u8)
@@ -109,7 +106,7 @@ impl<'a> Iterator for HexIterator<'a> {
 
     fn size_hint(&self) -> (usize, Option<usize>) {
         let (min, max) = self.iter.size_hint();
-        (min / 2, max.map(|x| x /2))
+        (min / 2, max.map(|x| x / 2))
     }
 }
 
@@ -172,9 +169,8 @@ impl ToHex for [u8] {
 #[cfg(any(test, feature = "std"))]
 impl FromHex for Vec<u8> {
     fn from_byte_iter<I>(iter: I) -> Result<Self, Error>
-        where I: Iterator<Item=Result<u8, Error>> +
-        ExactSizeIterator +
-        DoubleEndedIterator,
+    where
+        I: Iterator<Item = Result<u8, Error>> + ExactSizeIterator + DoubleEndedIterator,
     {
         iter.collect()
     }
@@ -184,9 +180,8 @@ macro_rules! impl_fromhex_array {
     ($len:expr) => {
         impl FromHex for [u8; $len] {
             fn from_byte_iter<I>(iter: I) -> Result<Self, Error>
-                where I: Iterator<Item=Result<u8, Error>> +
-                    ExactSizeIterator +
-                    DoubleEndedIterator,
+            where
+                I: Iterator<Item = Result<u8, Error>> + ExactSizeIterator + DoubleEndedIterator,
             {
                 if iter.len() == $len {
                     let mut ret = [0; $len];
@@ -199,7 +194,7 @@ macro_rules! impl_fromhex_array {
                 }
             }
         }
-    }
+    };
 }
 
 impl_fromhex_array!(2);
@@ -260,10 +255,7 @@ mod tests {
 
         let bytes = HexBytes(vec![1u8, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
-        assert_eq!(
-            format!("{:x}", bytes),
-            "0102030405060708090a"
-        );
+        assert_eq!(format!("{:x}", bytes), "0102030405060708090a");
 
         for i in 0..20 {
             assert_eq!(
@@ -272,14 +264,8 @@ mod tests {
             );
         }
 
-        assert_eq!(
-            format!("{:25x}", bytes),
-            "000000102030405060708090a"
-        );
-        assert_eq!(
-            format!("{:26x}", bytes),
-            "0000000102030405060708090a"
-        );
+        assert_eq!(format!("{:25x}", bytes), "000000102030405060708090a");
+        assert_eq!(format!("{:26x}", bytes), "0000000102030405060708090a");
     }
 
     #[test]
@@ -293,10 +279,7 @@ mod tests {
 
         let bytes = HexBytes(vec![1u8, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
-        assert_eq!(
-            format!("{:x}", bytes),
-            "0a090807060504030201"
-        );
+        assert_eq!(format!("{:x}", bytes), "0a090807060504030201");
 
         for i in 0..20 {
             assert_eq!(
@@ -305,14 +288,8 @@ mod tests {
             );
         }
 
-        assert_eq!(
-            format!("{:25x}", bytes),
-            "000000a090807060504030201"
-        );
-        assert_eq!(
-            format!("{:26x}", bytes),
-            "0000000a090807060504030201"
-        );
+        assert_eq!(format!("{:25x}", bytes), "000000a090807060504030201");
+        assert_eq!(format!("{:26x}", bytes), "0000000a090807060504030201");
     }
 
     #[test]
@@ -322,30 +299,11 @@ mod tests {
         let badchar2 = "012Y456789abcdeb";
         let badchar3 = "«23456789abcdef";
 
-        assert_eq!(
-            Vec::<u8>::from_hex(oddlen),
-            Err(Error::OddLengthString(17))
-        );
-        assert_eq!(
-            <[u8; 4]>::from_hex(oddlen),
-            Err(Error::OddLengthString(17))
-        );
-        assert_eq!(
-            <[u8; 8]>::from_hex(oddlen),
-            Err(Error::OddLengthString(17))
-        );
-        assert_eq!(
-            Vec::<u8>::from_hex(badchar1),
-            Err(Error::InvalidChar(b'Z'))
-        );
-        assert_eq!(
-            Vec::<u8>::from_hex(badchar2),
-            Err(Error::InvalidChar(b'Y'))
-        );
-        assert_eq!(
-            Vec::<u8>::from_hex(badchar3),
-            Err(Error::InvalidChar(194))
-        );
+        assert_eq!(Vec::<u8>::from_hex(oddlen), Err(Error::OddLengthString(17)));
+        assert_eq!(<[u8; 4]>::from_hex(oddlen), Err(Error::OddLengthString(17)));
+        assert_eq!(<[u8; 8]>::from_hex(oddlen), Err(Error::OddLengthString(17)));
+        assert_eq!(Vec::<u8>::from_hex(badchar1), Err(Error::InvalidChar(b'Z')));
+        assert_eq!(Vec::<u8>::from_hex(badchar2), Err(Error::InvalidChar(b'Y')));
+        assert_eq!(Vec::<u8>::from_hex(badchar3), Err(Error::InvalidChar(194)));
     }
 }
-
