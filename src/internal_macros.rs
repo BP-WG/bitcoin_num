@@ -55,7 +55,7 @@ macro_rules! impl_array_newtype {
             pub fn into_bytes(self) -> [$ty; $len] { self.0 }
         }
 
-        impl<'a> ::std::convert::From<&'a [$ty]> for $thing {
+        impl<'a> ::core::convert::From<&'a [$ty]> for $thing {
             fn from(data: &'a [$ty]) -> $thing {
                 assert_eq!(data.len(), $len);
                 let mut ret = [0; $len];
@@ -64,7 +64,7 @@ macro_rules! impl_array_newtype {
             }
         }
 
-        impl ::std::ops::Index<usize> for $thing {
+        impl ::core::ops::Index<usize> for $thing {
             type Output = $ty;
 
             #[inline]
@@ -76,57 +76,57 @@ macro_rules! impl_array_newtype {
 
         impl_index_newtype!($thing, $ty);
 
-        impl ::std::cmp::PartialEq for $thing {
+        impl ::core::cmp::PartialEq for $thing {
             #[inline]
             fn eq(&self, other: &$thing) -> bool {
                 &self[..] == &other[..]
             }
         }
 
-        impl ::std::cmp::Eq for $thing {}
+        impl ::core::cmp::Eq for $thing {}
 
-        impl ::std::cmp::PartialOrd for $thing {
+        impl ::core::cmp::PartialOrd for $thing {
             #[inline]
-            fn partial_cmp(&self, other: &$thing) -> Option<::std::cmp::Ordering> {
+            fn partial_cmp(&self, other: &$thing) -> Option<::core::cmp::Ordering> {
                 Some(self.cmp(&other))
             }
         }
 
-        impl ::std::cmp::Ord for $thing {
+        impl ::core::cmp::Ord for $thing {
             #[inline]
-            fn cmp(&self, other: &$thing) -> ::std::cmp::Ordering {
+            fn cmp(&self, other: &$thing) -> ::core::cmp::Ordering {
                 // manually implement comparison to get little-endian ordering
                 // (we need this for our numeric types; non-numeric ones shouldn't
                 // be ordered anyway except to put them in BTrees or whatever, and
                 // they don't care how we order as long as we're consistent).
                 for i in 0..$len {
-                    if self[$len - 1 - i] < other[$len - 1 - i] { return ::std::cmp::Ordering::Less; }
-                    if self[$len - 1 - i] > other[$len - 1 - i] { return ::std::cmp::Ordering::Greater; }
+                    if self[$len - 1 - i] < other[$len - 1 - i] { return ::core::cmp::Ordering::Less; }
+                    if self[$len - 1 - i] > other[$len - 1 - i] { return ::core::cmp::Ordering::Greater; }
                 }
-                ::std::cmp::Ordering::Equal
+                ::core::cmp::Ordering::Equal
             }
         }
 
         #[cfg_attr(feature = "clippy", allow(expl_impl_clone_on_copy))] // we don't define the `struct`, we have to explicitly impl
-        impl ::std::clone::Clone for $thing {
+        impl ::core::clone::Clone for $thing {
             #[inline]
             fn clone(&self) -> $thing {
                 $thing::from(&self[..])
             }
         }
 
-        impl ::std::marker::Copy for $thing {}
+        impl ::core::marker::Copy for $thing {}
 
-        impl ::std::hash::Hash for $thing {
+        impl ::core::hash::Hash for $thing {
             #[inline]
             fn hash<H>(&self, state: &mut H)
-                where H: ::std::hash::Hasher
+                where H: ::core::hash::Hasher
             {
                 (&self[..]).hash(state);
             }
 
             fn hash_slice<H>(data: &[$thing], state: &mut H)
-                where H: ::std::hash::Hasher
+                where H: ::core::hash::Hasher
             {
                 for d in data.iter() {
                     (&d[..]).hash(state);
@@ -139,8 +139,8 @@ macro_rules! impl_array_newtype {
 /// Implements debug formatting for a given wrapper type
 macro_rules! impl_array_newtype_show {
     ($thing:ident) => {
-        impl ::std::fmt::Debug for $thing {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        impl ::core::fmt::Debug for $thing {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                 write!(f, concat!(stringify!($thing), "({:?})"), &self[..])
             }
         }
@@ -150,38 +150,38 @@ macro_rules! impl_array_newtype_show {
 /// Implements standard indexing methods for a given wrapper type
 macro_rules! impl_index_newtype {
     ($thing:ident, $ty:ty) => {
-        impl ::std::ops::Index<::std::ops::Range<usize>> for $thing {
+        impl ::core::ops::Index<::core::ops::Range<usize>> for $thing {
             type Output = [$ty];
 
             #[inline]
-            fn index(&self, index: ::std::ops::Range<usize>) -> &[$ty] {
+            fn index(&self, index: ::core::ops::Range<usize>) -> &[$ty] {
                 &self.0[index]
             }
         }
 
-        impl ::std::ops::Index<::std::ops::RangeTo<usize>> for $thing {
+        impl ::core::ops::Index<::core::ops::RangeTo<usize>> for $thing {
             type Output = [$ty];
 
             #[inline]
-            fn index(&self, index: ::std::ops::RangeTo<usize>) -> &[$ty] {
+            fn index(&self, index: ::core::ops::RangeTo<usize>) -> &[$ty] {
                 &self.0[index]
             }
         }
 
-        impl ::std::ops::Index<::std::ops::RangeFrom<usize>> for $thing {
+        impl ::core::ops::Index<::core::ops::RangeFrom<usize>> for $thing {
             type Output = [$ty];
 
             #[inline]
-            fn index(&self, index: ::std::ops::RangeFrom<usize>) -> &[$ty] {
+            fn index(&self, index: ::core::ops::RangeFrom<usize>) -> &[$ty] {
                 &self.0[index]
             }
         }
 
-        impl ::std::ops::Index<::std::ops::RangeFull> for $thing {
+        impl ::core::ops::Index<::core::ops::RangeFull> for $thing {
             type Output = [$ty];
 
             #[inline]
-            fn index(&self, _: ::std::ops::RangeFull) -> &[$ty] {
+            fn index(&self, _: ::core::ops::RangeFull) -> &[$ty] {
                 &self.0[..]
             }
         }
@@ -191,9 +191,9 @@ macro_rules! impl_index_newtype {
 
 macro_rules! display_from_debug {
     ($thing:ident) => {
-        impl ::std::fmt::Display for $thing {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> Result<(), ::std::fmt::Error> {
-                ::std::fmt::Debug::fmt(self, f)
+        impl ::core::fmt::Display for $thing {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> Result<(), ::core::fmt::Error> {
+                ::core::fmt::Debug::fmt(self, f)
             }
         }
     }
@@ -208,8 +208,8 @@ macro_rules! display_from_debug {
 macro_rules! impl_bytes_newtype {
     ($t:ident, $len:expr) => (
 
-        impl ::std::fmt::LowerHex for $t {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        impl ::core::fmt::LowerHex for $t {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                 for &ch in self.0.iter() {
                     write!(f, "{:02x}", ch)?;
                 }
@@ -217,17 +217,17 @@ macro_rules! impl_bytes_newtype {
             }
         }
 
-        impl ::std::fmt::Display for $t {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        impl ::core::fmt::Display for $t {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                 fmt::LowerHex::fmt(self, f)
             }
         }
 
         impl $crate::hex::FromHex for $t {
             fn from_byte_iter<I>(iter: I) -> Result<Self, $crate::hex::Error>
-                where I: ::std::iter::Iterator<Item=Result<u8, $crate::hex::Error>> +
-                    ::std::iter::ExactSizeIterator +
-                    ::std::iter::DoubleEndedIterator,
+                where I: ::core::iter::Iterator<Item=Result<u8, $crate::hex::Error>> +
+                    ::core::iter::ExactSizeIterator +
+                    ::core::iter::DoubleEndedIterator,
             {
                 if iter.len() == $len {
                     let mut ret = [0; $len];
@@ -241,7 +241,7 @@ macro_rules! impl_bytes_newtype {
             }
         }
 
-        impl ::std::str::FromStr for $t {
+        impl ::core::str::FromStr for $t {
             type Err = $crate:::hex::Error;
             fn from_str(s: &str) -> Result<Self, Self::Err> {
                 $crate::hex::FromHex::from_hex(s)
@@ -268,7 +268,7 @@ macro_rules! impl_bytes_newtype {
                     impl<'de> $crate::serde::de::Visitor<'de> for HexVisitor {
                         type Value = $t;
 
-                        fn expecting(&self, formatter: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                        fn expecting(&self, formatter: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                             formatter.write_str("an ASCII hex string")
                         }
 
@@ -276,7 +276,7 @@ macro_rules! impl_bytes_newtype {
                         where
                             E: $crate::serde::de::Error,
                         {
-                            if let Ok(hex) = ::std::str::from_utf8(v) {
+                            if let Ok(hex) = ::core::str::from_utf8(v) {
                                 $crate::hex::FromHex::from_hex(hex).map_err(E::custom)
                             } else {
                                 return Err(E::invalid_value($crate::serde::de::Unexpected::Bytes(v), &self));
@@ -298,7 +298,7 @@ macro_rules! impl_bytes_newtype {
                     impl<'de> $crate::serde::de::Visitor<'de> for BytesVisitor {
                         type Value = $t;
 
-                        fn expecting(&self, formatter: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                        fn expecting(&self, formatter: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                             formatter.write_str("a bytestring")
                         }
 

@@ -136,7 +136,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::Add<$name> for $name {
+        impl ::core::ops::Add<$name> for $name {
             type Output = $name;
 
             fn add(self, other: $name) -> $name {
@@ -156,7 +156,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::Sub<$name> for $name {
+        impl ::core::ops::Sub<$name> for $name {
             type Output = $name;
 
             #[inline]
@@ -165,7 +165,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::Mul<$name> for $name {
+        impl ::core::ops::Mul<$name> for $name {
             type Output = $name;
 
             fn mul(self, other: $name) -> $name {
@@ -180,7 +180,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::Div<$name> for $name {
+        impl ::core::ops::Div<$name> for $name {
             type Output = $name;
 
             fn div(self, other: $name) -> $name {
@@ -188,7 +188,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::Rem<$name> for $name {
+        impl ::core::ops::Rem<$name> for $name {
             type Output = $name;
 
             fn rem(self, other: $name) -> $name {
@@ -238,13 +238,13 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::default::Default for $name {
+        impl ::core::default::Default for $name {
             fn default() -> $name {
                 $crate::util::BitArray::zero()
             }
         }
 
-        impl ::std::ops::BitAnd<$name> for $name {
+        impl ::core::ops::BitAnd<$name> for $name {
             type Output = $name;
 
             #[inline]
@@ -259,7 +259,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::BitXor<$name> for $name {
+        impl ::core::ops::BitXor<$name> for $name {
             type Output = $name;
 
             #[inline]
@@ -274,7 +274,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::BitOr<$name> for $name {
+        impl ::core::ops::BitOr<$name> for $name {
             type Output = $name;
 
             #[inline]
@@ -289,7 +289,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::Not for $name {
+        impl ::core::ops::Not for $name {
             type Output = $name;
 
             #[inline]
@@ -303,7 +303,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::Shl<usize> for $name {
+        impl ::core::ops::Shl<usize> for $name {
             type Output = $name;
 
             fn shl(self, shift: usize) -> $name {
@@ -325,7 +325,7 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::ops::Shr<usize> for $name {
+        impl ::core::ops::Shr<usize> for $name {
             type Output = $name;
 
             fn shr(self, shift: usize) -> $name {
@@ -345,8 +345,8 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::fmt::Debug for $name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        impl ::core::fmt::Debug for $name {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                 let &$name(ref data) = self;
                 write!(f, "0x")?;
                 for ch in data.iter().rev() {
@@ -356,9 +356,9 @@ macro_rules! construct_uint {
             }
         }
 
-        impl ::std::fmt::Display for $name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                <::std::fmt::Debug>::fmt(self, f)
+        impl ::core::fmt::Display for $name {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                <::core::fmt::Debug>::fmt(self, f)
             }
         }
     );
