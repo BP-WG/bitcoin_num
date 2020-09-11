@@ -152,17 +152,6 @@ macro_rules! impl_array_newtype {
     };
 }
 
-/// Implements debug formatting for a given wrapper type
-macro_rules! impl_array_newtype_show {
-    ($thing:ident) => {
-        impl ::core::fmt::Debug for $thing {
-            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-                write!(f, concat!(stringify!($thing), "({:?})"), &self[..])
-            }
-        }
-    };
-}
-
 /// Implements standard indexing methods for a given wrapper type
 macro_rules! impl_index_newtype {
     ($thing:ident, $ty:ty) => {
