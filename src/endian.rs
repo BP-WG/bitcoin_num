@@ -127,6 +127,46 @@ macro_rules! define_chunk_slice_to_int {
 }
 
 define_chunk_slice_to_int!(
+    bytes_to_u16_slice_be,
+    u16,
+    slice_to_u16_be,
+    doc = "u16",
+    doc = "bytes_to_u16_slice_be"
+);
+
+define_chunk_slice_to_int!(
+    bytes_to_u16_slice_le,
+    u16,
+    slice_to_u16_le,
+    doc = "u16",
+    doc = "bytes_to_u16_slice_le"
+);
+
+define_chunk_slice_to_int!(
+    bytes_to_u32_slice_be,
+    u32,
+    slice_to_u32_be,
+    doc = "u32",
+    doc = "bytes_to_u32_slice_be"
+);
+
+define_chunk_slice_to_int!(
+    bytes_to_u32_slice_le,
+    u32,
+    slice_to_u32_le,
+    doc = "u32",
+    doc = "bytes_to_u32_slice_le"
+);
+
+define_chunk_slice_to_int!(
+    bytes_to_u64_slice_be,
+    u64,
+    slice_to_u64_be,
+    doc = "u64",
+    doc = "bytes_to_u64_slice_be"
+);
+
+define_chunk_slice_to_int!(
     bytes_to_u64_slice_le,
     u64,
     slice_to_u64_le,
@@ -173,8 +213,28 @@ mod tests {
             0xef, 0xbe, 0xad, 0xde, 0xfe, 0xca, 0xad, 0x1b, 0xfe, 0xca, 0xad, 0x1b, 0xce, 0xfa,
             0x01, 0x02,
         ];
-        let mut out = [0; 2];
-        bytes_to_u64_slice_le(&inp, &mut out);
-        assert_eq!(out, [0x1badcafedeadbeef, 0x0201face1badcafe]);
+        let mut out16 = [0u16; 8];
+        let mut out32 = [0u32; 4];
+        let mut out64 = [0u64; 2];
+
+        bytes_to_u16_slice_be(&inp, &mut out16);
+        assert_eq!(
+            out16,
+            [0xefbe, 0xadde, 0xfeca, 0xad1b, 0xfeca, 0xad1b, 0xcefa, 0x0102]
+        );
+        bytes_to_u32_slice_be(&inp, &mut out32);
+        assert_eq!(out32, [0xefbeadde, 0xfecaad1b, 0xfecaad1b, 0xcefa0102]);
+        bytes_to_u64_slice_be(&inp, &mut out64);
+        assert_eq!(out64, [0xefbeaddefecaad1b, 0xfecaad1bcefa0102]);
+
+        bytes_to_u16_slice_le(&inp, &mut out16);
+        assert_eq!(
+            out16,
+            [0xbeef, 0xdead, 0xcafe, 0x1bad, 0xcafe, 0x1bad, 0xface, 0x0201]
+        );
+        bytes_to_u32_slice_le(&inp, &mut out32);
+        assert_eq!(out32, [0xdeadbeef, 0x1badcafe, 0x1badcafe, 0x0201face]);
+        bytes_to_u64_slice_le(&inp, &mut out64);
+        assert_eq!(out64, [0x1badcafedeadbeef, 0x0201face1badcafe]);
     }
 }
