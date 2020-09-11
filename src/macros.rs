@@ -193,22 +193,13 @@ macro_rules! impl_index_newtype {
     };
 }
 
-macro_rules! display_from_debug {
-    ($thing:ident) => {
-        impl ::core::fmt::Display for $thing {
-            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> Result<(), ::core::fmt::Error> {
-                ::core::fmt::Debug::fmt(self, f)
-            }
-        }
-    };
-}
-
 /// Implements several traits for byte-based newtypes.
 /// Implements:
 /// - std::fmt::LowerHex (implies hashes::hex::ToHex)
 /// - std::fmt::Display
 /// - std::str::FromStr
 /// - hashes::hex::FromHex
+#[macro_export]
 macro_rules! impl_bytes_newtype {
     ($t:ident, $len:expr) => (
 

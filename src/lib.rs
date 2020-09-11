@@ -47,6 +47,6 @@ mod std_impls;
 pub mod endian;
 pub mod hex;
 #[macro_use]
-mod internal_macros;
+mod macros;
 pub mod uint;
 pub mod util;
