@@ -44,7 +44,7 @@ pub extern crate core;
 #[cfg(any(test, feature = "std"))]
 mod std_impls;
 
-pub(crate) mod endian;
+pub mod endian;
 pub mod hex;
 #[macro_use]
 mod internal_macros;
