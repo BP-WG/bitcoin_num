@@ -68,6 +68,55 @@ impl<T: fmt::LowerHex> ToHex for T {
     }
 }
 
+/// Helper trait that simplifies implementation of `FromHex` trait for all
+/// wrapper types:
+/// ```
+/// use bitcoin_num::hex::{InnerHex, FromHex};
+///
+/// struct WrappedType([u8; 2]);
+/// impl InnerHex for WrappedType {
+///     type Inner = [u8; 2];
+///     fn into_inner(self) -> Self::Inner { self.0 }
+///     fn as_inner(&self) -> &Self::Inner { &self.0 }
+///     fn from_inner(inner: Self::Inner) -> Self { Self(inner) }
+/// }
+/// let data = WrappedType::from_hex("1dab").unwrap();
+/// assert_eq!(data.as_inner(), &[0x1d, 0xab])
+/// ```
+pub trait InnerHex {
+    /// Type for inner data that can be converted from a hex string
+    type Inner: FromHex;
+
+    /// Flag indicating whether user-visible hex serializations of the inner
+    /// data should be backward. For some reason Satoshi decided this should be
+    /// true for `Sha256dHash`, so here we are.
+    const DISPLAY_BACKWARD: bool = false;
+
+    /// Unwraps the type and returns the underlying data
+    fn into_inner(self) -> Self::Inner;
+
+    /// Unwraps the type and returns a reference to the underlying data
+    fn as_inner(&self) -> &Self::Inner;
+
+    /// Constructs a type from the underlying data
+    fn from_inner(inner: Self::Inner) -> Self;
+}
+
+impl<T: InnerHex> FromHex for T {
+    fn from_byte_iter<I>(iter: I) -> Result<Self, Error>
+    where
+        I: Iterator<Item = Result<u8, Error>> + ExactSizeIterator + DoubleEndedIterator,
+    {
+        let inner;
+        if Self::DISPLAY_BACKWARD {
+            inner = T::Inner::from_byte_iter(iter.rev())?;
+        } else {
+            inner = T::Inner::from_byte_iter(iter)?;
+        }
+        Ok(InnerHex::from_inner(inner))
+    }
+}
+
 /// Iterator over a hex-encoded string slice which decodes hex and yields bytes.
 pub struct HexIterator<'a> {
     /// The `Bytes` iterator whose next two bytes will be decoded to yield
