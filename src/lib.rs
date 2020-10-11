@@ -40,6 +40,8 @@ extern crate test;
 
 #[cfg(any(test, feature = "std"))]
 pub extern crate core;
+#[cfg(feature = "serde")]
+extern crate serde;
 
 #[cfg(any(test, feature = "std"))]
 mod std_impls;

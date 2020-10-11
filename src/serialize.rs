@@ -25,11 +25,12 @@ where
 }
 
 /// Deserializes a lowercase hex string to a `Vec<u8>`.
-pub fn from_hex<'de, D>(deserializer: D) -> Result<Vec<u8>, D::Error>
+pub fn from_hex<'de, D>(deserializer: D) -> Result<T, D::Error>
 where
+    T: FromHex,
     D: Deserializer<'de>,
 {
     use serde::de::Error;
     String::deserialize(deserializer)
-        .and_then(|string| Vec::from_hex(&string).map_err(|err| Error::custom(err.to_string())))
+        .and_then(|string| T::from_hex(&string).map_err(|err| Error::custom(err.to_string())))
 }
