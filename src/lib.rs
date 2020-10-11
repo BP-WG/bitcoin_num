@@ -48,5 +48,7 @@ pub mod endian;
 pub mod hex;
 #[macro_use]
 mod macros;
+#[cfg(feature = "serde")]
+pub mod serialize;
 pub mod uint;
 pub mod util;
