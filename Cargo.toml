@@ -1,6 +1,6 @@
 [package]
 name = "bitcoin_num"
-version = "0.1.0"
+version = "0.2.3"
 authors = ["Andrew Poelstra <apoelstra@wpsoftware.net>", "Dr. Maxim Orlovsky <orlovsky@pandoracore.com>"]
 license = "CC0-1.0"
 description = "Numeric functions & traits used by rust bitcoin, bitcoin_hashes and other packages, supporting rustc 1.29.0"
@@ -14,7 +14,8 @@ name = "bitcoin_num"
 path = "src/lib.rs"
 
 [features]
-default = [ "std" ]
+default = ["std"]
+all = ["std", "serde", "serde-std"]
 std = []
 serde-std = ["serde/std"]
 unstable = []  # for benchmarking
